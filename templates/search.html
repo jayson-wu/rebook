@@ -1,0 +1,151 @@
+{% include 'header.html' %}
+<br>
+
+<div class="container first-div">
+    <h1 class="display-4 header">Find your book.</h1>
+    <p>Search our collection of available listings, posted by and for Princeton students!</p>
+</div>
+
+<form id='search' action='{{url_for("search")}}' method="get">
+
+    <div class='container'>
+        <div class="input-group">
+            <div class="form-outline">
+                <input type="text" name="search" id="search2" class="form-control"
+                    placeholder="Search books by title, isbn, author, course" value='{{query}}' />
+            </div>
+            <button type="submit" class="btn btn-primary"
+                onclick="this.disabled=true; this.form.submit();">
+                <i class="fa fa-search"></i> Search
+            </button>
+        </div>
+
+        <br>
+        <nav class="navbar navbar-expand-lg navbar-light bg-dark">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fa fa-filter"></i> Filters
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+                <!-- <a class="navbar-brand-dark" >Filters</a> -->
+
+                <ul class="navbar-nav mr-auto" id="searchNavbar">
+                    {% include 'searchnavbar.html' %}
+                </ul>
+            </div>
+        </nav>
+
+        <div class="first-div" id="searchResults">
+            {% include 'searchresults.html' %}
+        </div>
+        <br>
+    </div>
+</form>
+<br>
+
+
+<script>
+
+    'use strict';
+
+    function handleResponse(response) {
+        $('#searchResults').html(response);
+    }
+
+    function handleText(sort, lowerbound, upperbound, newval, goodval, fairval, poorval) {
+        if (sort == 'price_high_to_low')
+            sort = 'Highest to Lowest Price';
+        else if (sort == 'price_low_to_high')
+            sort = 'Lowest to Highest Price';
+        else if (sort == 'time_most_recent')
+            sort = 'Most Recent to Oldest';
+        else if (sort == 'time_most_old')
+            sort = 'Oldest to Most Recent';
+        else sort = '';
+        $('#sortVal').text(sort);
+
+        var priceText = '';
+        if (lowerbound != '' && lowerbound != null)
+            priceText = 'at least $' + lowerbound;
+        if (upperbound != '' && upperbound != null)
+            priceText += ' at most $' + upperbound;
+        $('#priceVal').text(priceText);
+
+        var conditionText = '';
+        if (newval == 'true')
+            conditionText += 'New '
+        if (goodval == 'true')
+            conditionText += 'Good '
+        if (fairval == 'true')
+            conditionText += 'Fair '
+        if (poorval == 'true')
+            conditionText += 'Poor '
+        console.log(conditionText)
+        $('#conditionVal').text(conditionText);
+    }
+
+    let request = null;
+
+    function getResults() {
+        let search = $('#search2').val();
+        let sort = $("input[name='sortOptions']:checked").val()
+        let lowerbound = $('#lower-bound').val();
+        let upperbound = $('#upper-bound').val();
+        let newval = $('#new').is(":checked");
+        let goodval = $('#good').is(":checked");
+        let fairval = $('#fair').is(":checked");
+        let poorval = $('#poor').is(":checked");
+
+        search = encodeURIComponent(search);
+        sort = encodeURIComponent(sort);
+        lowerbound = encodeURIComponent(lowerbound);
+        upperbound = encodeURIComponent(upperbound);
+        newval = encodeURIComponent(newval);
+        goodval = encodeURIComponent(goodval);
+        fairval = encodeURIComponent(fairval);
+        poorval = encodeURIComponent(poorval);
+
+        handleText(sort, lowerbound, upperbound, newval, goodval, fairval, poorval);
+
+        let url = '/searchfilters?search=' + search +
+            '&sortOptions=' + sort +
+            '&lower-bound=' + lowerbound + '&upper-bound=' + upperbound +
+            '&new=' + newval + '&good=' + goodval + '&fair=' + fairval + '&poor=' + poorval;
+
+        if (request != null)
+            request.abort();
+
+        request = $.ajax(
+            {
+                type: 'POST',
+                url: url,
+                success: handleResponse
+            }
+        );
+    }
+
+    function setup() {
+        $('#search2').focus();
+        $('#price_low_to_high').on('click', getResults);
+        $('#price_high_to_low').on('click', getResults);
+        $('#time_most_recent').on('click', getResults);
+        $('#time_most_old').on('click', getResults);
+        $('#lower-bound').on('input', getResults);
+        $('#upper-bound').on('input', getResults);
+        $('#new').on('click', getResults);
+        $('#good').on('click', getResults);
+        $('#fair').on('click', getResults);
+        $('#poor').on('click', getResults);
+    }
+
+    $('document').ready(setup);
+
+</script>
+
+
+<!-- <a class="dropdown-item" href="#">Highest to lowest</a> -->
+
+
+{% include 'footer.html' %}

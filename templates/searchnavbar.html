@@ -1,0 +1,100 @@
+<li class="nav-item dropdown">
+    <a class="nav-link-dark dropdown-toggle" href="#" id="sortNavbar" role="button" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        Sort:
+        <em><span id='sortVal'>
+            {% if sort == 'price_high_to_low' %} Highest to Lowest Price
+            {% elif sort == 'price_low_to_high' %} Lowest to Highest Price
+            {% elif sort == 'time_most_recent' %} Most Recent to Oldest
+            {% elif sort == 'time_most_old' %} Oldest to Most Recent {%endif%}
+        </span></em>
+    </a>
+    <div class="dropdown-menu" id='filters' aria-labelledby="navbarDropdown">
+        <input class="" type="radio" name="sortOptions" id="price_low_to_high" value="price_low_to_high" {% if
+            sort=='price_low_to_high' %} checked {% endif %}>
+        <label class="form-check-label" for="price_low_to_high">
+            Sort Lowest to Highest Price</label>
+        <br>
+
+        <input class="" type="radio" name="sortOptions" id="price_high_to_low" value="price_high_to_low" {% if
+            sort=='price_high_to_low' %} checked {% endif %}>
+        <label class="form-check-label" for="price_high_to_low">
+            Sort Highest to Lowest Price
+        </label>
+        <br>
+
+        <input class="" type="radio" name="sortOptions" id="time_most_recent" value="time_most_recent" {% if
+            sort=='time_most_recent' %} checked {% endif %}>
+        <label class="form-check-label" for="time_most_recent">
+            Sort by Most Recent to Oldest
+        </label>
+        <br>
+
+        <input class="" type="radio" name="sortOptions" id="time_most_old" value="time_most_old" {% if
+            sort=='time_most_old' %} checked {% endif %}>
+        <label class="form-check-label" for="time_most_old">
+            Sort by Oldest to Most Recent
+        </label>
+    </div>
+</li>
+
+<li class="nav-item dropdown">
+    <a class="nav-link-dark dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        Price Controls:
+        <em><span id='priceVal'>
+            {%if lower != '' and lower is not none%} at least ${{lower}}{%endif%}
+            {%if upper != '' and upper is not none%} at most ${{upper}}{%endif%}
+        </span></em>
+    </a>
+    <div class="dropdown-menu" aria-labelledby="navbarDropdown" id="pricecontrols">
+        <label class="form-check-label" for="lower-bound">
+            Price at least:
+        </label>
+        <input class="form-control short" placeholder="e.g. 20" type="text" name="lower-bound" id="lower-bound"
+            {%if lower is not none%} value={{lower}}{%endif%}>
+        <br>
+        <label class="form-check-label" for="upper-bound">
+            Price at most:
+        </label>
+        <input class="form-control short" placeholder="e.g. 100" type="text" name="upper-bound" id="upper-bound"
+            {%if upper is not none%} value={{upper}}{%endif%}>
+    </div>
+</li>
+
+<li class="nav-item dropdown">
+    <a class="nav-link-dark dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        Condition:
+        <em><span id='conditionVal'>
+            {%if filter_condition is not none%}
+            {%for condition in filter_condition%}
+            {%if condition is not none%}{{condition}} {%endif%}{%endfor%}{%endif%}
+        </span></em>
+    </a>
+    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <div>
+            <input type="checkbox" name="new" id="new" value="New" {%if new == 'true' or new == 'New'%} checked {%endif%}>
+            <label class="form-check-label" for="new">
+                New</label>
+        </div>
+        <div>
+            <input type="checkbox" name="good" id="good" value="Good" {%if good == 'true' or good == 'Good'%} checked {%endif%}>
+            <label class="form-check-label" for="good">
+                Good
+            </label>
+        </div>
+        <div>
+            <input type="checkbox" name="fair" id="fair" value="Fair" {%if fair == 'true' or fair == 'Fair'%} checked {%endif%}>
+            <label class="form-check-label" for="fair">
+                Fair
+            </label>
+        </div>
+        <div>
+            <input type="checkbox" name="poor" id="poor" value="Poor" {%if poor == 'true' or poor == 'Poor'%} checked {%endif%}>
+            <label class="form-check-label" for="poor">
+                Poor
+            </label>
+        </div>
+    </div>
+</li>

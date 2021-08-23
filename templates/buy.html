@@ -1,0 +1,12 @@
+{% include 'header.html' %}
+<br>
+
+<div class="container first-div">
+    <h1 class="display-4 header">Success!</h1>
+    <p>You have successfully placed your order on <em>{{ listing['title'] }}</em> for ${{ listing['price'] }}.</p>
+    <p>The seller is <strong>{{ listing['seller'] }}.</strong> Their contact information is <strong><a id="email-link" href="mailto: {{email}}">{{email}}</a>.</strong> They have received your contact information too. 
+        Please organize payment and delivery conditions amongst yourselves. </p>
+    <p>Once you have received your book from the seller, be sure to remind the seller to click the check mark button in the 'pending' tab of their Seller Station to ensure that the records are updated.</p>
+    <p>A confirmation has also been sent to your email with the information above, so feel free to navigate away at any time.</p>
+</div>
+{% include 'footer.html' %}

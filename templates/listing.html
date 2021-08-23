@@ -1,0 +1,527 @@
+{% include 'header.html' %}
+
+<div class="container first-div">
+    <br>
+
+    {% include 'alerts.html' %}
+    <small>Posted: {{listing['formatted_time']}}</small>
+    <hr>
+    <div class="row">
+        <div class="col-lg-6">
+            {% if book.getImage() != '' %}
+            <img id="listing-image" src={{book.getImage()}}>
+            {% else %}
+            <img id="listing-image" src='https://www.thermaxglobal.com/wp-content/uploads/2020/05/image-not-found.jpg'>
+            {% endif %}
+            <br>
+            <br>
+            <div class='row'>
+                {% for photo in listing['photos']%}
+
+                <button class="imagebutton" data-toggle="modal" data-target="#photomodal{{photo[0]}}"><img
+                        class='upload-thumbnail' src='{{photo[1]}}'></button>
+
+
+                <div id="photomodal{{photo[0]}}" class="modal fade bd-example-modal-lg fullmode" tabindex="-1"
+                    role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg fullmode">
+                        <div class="modal-content fullmode">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Image Preview</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body fullmode">
+                                <img class='modal-image' src='{{photo[1]}}'>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {%endfor%}
+
+            </div>
+            </p>
+        </div>
+        <div class="col-lg-6">
+            {% if book is not none %}
+            <h4>Title: {{book.getTitle()}}</h4>
+            {% if book.getSubtitle() != '' %}
+            <h6>Subtitle: {{book.getSubtitle()}}</h6>
+            {% endif %}
+            <br>
+
+            <p><strong>Authors:</strong> {{book.getAuthorString()}}</p>
+            <p><strong>ISBN:</strong> {{book.getISBN()}}</p>
+            <p><strong>Course:</strong> {{listing['coursenum']}}</p>
+
+            {% if book.getPublisher() != '' %}
+            <p><strong>Publisher:</strong> {{book.getPublisher()}}</p>
+            {% endif %}
+
+            {% if book.getPublishedDate() != '' %}
+            <p><strong>Published Date:</strong> {{book.getPublishedDate()}}</p>
+            {% endif %}
+
+            {% if book.getDescription() != '' %}
+            <p><strong>Description:</strong> {{book.getDescription()[:124]}}<span id="textMore"
+                    class='collapse'>{{book.getDescription()[124:]}}</span><br>
+                <button class="btn-link btn-anchor" id="seeMore" data-toggle="collapse" data-target="#textMore"
+                    aria-expanded="true">See More</button>
+            </p>
+            {% endif %}
+
+            <p><strong>Seller:</strong> {{listing['seller']}} | <strong>Contact Email:</strong> {{email}}</p>
+
+            <p><strong>Price:</strong> ${{listing['price']}} | <strong>Condition:</strong> {{listing['condition']}}</p>
+            {% if listing['description'] != '' %}
+            <p><strong>Additional Information:</strong> {{listing['description']}}</p>
+            {%endif%}
+
+
+
+
+            {% endif %}
+
+            {% if not listing['seller'] == username %}
+            {% if listing['seller_status'] == 'active' %}
+            {% if listing['in_bookbag'] %}
+
+            <button type="button" class="btn btn-danger" data-toggle="modal"
+                data-target="#removeBookbag{{listing['listing_id']}}"><i class="fa fa-trash" aria-hidden="true"></i>
+                Remove from Bookbag</button>
+
+            <!-- Modal -->
+            <div id="removeBookbag{{listing['listing_id']}}" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Remove from Bookbag</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to remove this listing from your bookbag?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" data-dismiss="modal">Cancel</button>
+
+                            <form action=" {{ url_for('remove_from_bookbag', listing_id= listing['listing_id']) }} " ,
+                                method='post'>
+                                <button class="btn btn-danger" onclick="this.disabled=true; this.form.submit();"><i
+                                        class="fa fa-trash" aria-hidden="true"></i> Remove
+                                    from Bookbag
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% else %}
+            <!-- Trigger the modal with a button -->
+            <button type="button" class="btn btn-primary add" data-toggle="modal" data-target="#myModal"><i
+                    class="fa fa-book" aria-hidden="true"></i> Add to Bookbag</button>
+
+            <!-- Modal -->
+            <div id="myModal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Add to Bookbag</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to add to bookbag?</p>
+                            <p>You can always remove it from your Buyer Bookbag later.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" data-dismiss="modal">Cancel</button>
+
+                            <form action="{{ url_for('add_to_bookbag', listing_id= listing['listing_id']) }}"
+                                method='post'>
+                                <button class="btn btn-primary add" onclick="this.disabled=true; this.form.submit();"><i
+                                        class="fa fa-book" aria-hidden="true"></i> Add to
+                                    Bookbag</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Trigger the modal with a button -->
+            <button type="button" class="btn btn-primary buy" data-toggle="modal" data-target="#myModal2"><i
+                    class="fa fa-usd" aria-hidden="true"></i> Buy Now</button>
+
+            <!-- Modal -->
+            <div id="myModal2" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Buy now</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        
+                        <div class="modal-body">
+                            <p>Are you sure you want to buy now?</p>
+                            <p>No in-app payment system is provided for this transaction. It is your responsibility and the
+                                seller's to negotiate the payment method. Your contact information will be exchanged
+                                with the seller.</p>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                            <form method='post' action="{{ url_for('buypage', listing_id= listing['listing_id'])}}">
+                                <input type="hidden" id="version" name="version" value="0">
+                                <button type="submit" class="btn btn-primary edit" id="checkout-button"
+                                    onclick="this.disabled=true; this.form.submit();"><i class="fa fa-usd"
+                                        aria-hidden="true"></i> Pay On My Own Terms</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#priceCompare">Compare this
+                book's price!</button>
+
+            {% include 'pricecomparison.html' %}
+            {% endif %}
+            {% if listing['seller_status'] == 'pending' %}
+            <br>
+            <p>You have successfully placed your order on <em>{{ listing['title'] }}</em> for ${{ listing['price'] }}.
+                The seller is <strong>{{ listing['seller'] }}.</strong> Their contact information is
+                <strong>{{email}}.</strong>
+            </p>
+
+            <!-- <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal4"><i
+                    class="fa fa-check" aria-hidden="true"></i> Confirm Purchase</button>
+
+            -- Modal --
+            <div id="myModal4" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+
+                    -- Modal content--
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Confirm Purchase</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <p>By pressing this button, you are indicating that you have successfully received the book.
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" data-dismiss="modal">Cancel</button>
+
+                            <form action="{{ url_for('confirm_transaction', listing_id= listing['listing_id']) }}"
+                                method='post'>
+                                <button class="btn btn-success" onclick="this.disabled=true; this.form.submit();"><i
+                                        class="fa fa-check" aria-hidden="true"></i> Confirm
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal2"><i
+                    class="fa fa-trash" aria-hidden="true"></i> Cancel Purchase</button>
+
+            <!-- Modal -->
+            <div id="myModal2" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Cancel Purchase</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to cancel your purchase?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" data-dismiss="modal">Go back</button>
+
+                            <form action=" {{ url_for('cancel', listing_id= listing['listing_id'])}} " , method='post'>
+                                <button class="btn btn-danger" onclick="this.disabled=true; this.form.submit();"><i
+                                        class="fa fa-trash" aria-hidden="true"></i> Confirm
+                                    Cancellation
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% if listing['seller_status'] == 'completed' or listing['seller_status'] == 'finished' %}
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal3"><i
+                    class="fa fa-trash" aria-hidden="true"></i> Remove from Purchase History</button>
+
+            <!-- Modal -->
+            <div id="myModal3" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Remove from Purchase History</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to remove this listing from your purchase history? This action is
+                                permanent.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" data-dismiss="modal">Cancel</button>
+
+                            <form action=" {{ url_for('remove_from_purchase', listing_id= listing['listing_id']) }} " ,
+                                method='post'>
+                                <button class="btn btn-danger" onclick="this.disabled=true; this.form.submit();"><i
+                                        class="fa fa-trash" aria-hidden="true"></i> Remove
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% else%}
+            {% if listing['seller_status'] == 'active' %}
+
+            <button type="button" class="btn btn-primary edit" data-toggle="modal" data-target="#myModal3"><i
+                    class="fa fa-pencil" aria-hidden="true"></i> Edit Listing</button>
+
+            <!-- Modal -->
+            <div id="myModal3" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Edit Listing</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to edit this listing?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" data-dismiss="modal">Cancel</button>
+
+                            <form action="{{ url_for('edit' ,listing_id= listing['listing_id']) }}" , method='post'>
+                                <button class="btn btn-primary edit"
+                                    onclick="this.disabled=true; this.form.submit();"><i class="fa fa-pencil"
+                                        aria-hidden="true"></i>
+                                    Edit Listing
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal"><i
+                    class="fa fa-trash" aria-hidden="true"></i> Remove Listing</button>
+
+            <!-- Modal -->
+            <div id="myModal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Remove Listing</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to remove this listing? This action is permanent.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" data-dismiss="modal">Cancel</button>
+
+                            <form action="{{ url_for('delete_listing' ,listing_id= listing['listing_id']) }}" ,
+                                method='post'>
+                                <button class="btn btn-danger" onclick="this.disabled=true; this.form.submit();"><i
+                                        class="fa fa-trash" aria-hidden="true"></i> Remove
+                                    Listing
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% if listing['seller_status'] == 'pending' %}
+
+            <p><strong>Buyer:</strong> {{listing['buyer']}}</p>
+            <p><strong>Contact Email:</strong> {{listing['email']}}</p>
+
+            <p> It is up to you two to figure out the rest! Please
+                contact them to arrange the payment and delivery specifications.</p>
+
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal4"><i
+                    class="fa fa-check" aria-hidden="true"></i> Confirm Transaction</button>
+
+            <!-- -- Modal -- -->
+            <div id="myModal4" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- -- Modal content-- -->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Confirm Transaction</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <p>By pressing this button, you are indicating that the book has been successfully sold to
+                                the buyer. This action is permanent.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" data-dismiss="modal">Cancel</button>
+
+                            <form action="{{ url_for('confirm_transaction', listing_id= listing['listing_id']) }}" ,
+                                method='post'>
+                                <button class="btn btn-success"><i class="fa fa-check" aria-hidden="true"></i> Confirm
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <button type="button" class="btn btn-danger" data-toggle="modal"
+                data-target="#cancelModal{{listing['listing_id']}}"><i class="fa fa-times" aria-hidden="true"></i>
+                Cancel Transaction</button>
+            <!-- Modal -->
+            <div id="cancelModal{{listing['listing_id']}}" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Cancel Transaction</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <p>By pressing this button, you are denying the buyer's request to purchase this
+                                book.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" data-dismiss="modal">Cancel</button>
+
+                            <form action="{{ url_for('cancel_from_seller', listing_id= listing['listing_id']) }}" ,
+                                method='post'>
+                                <button class="btn btn-danger" onclick="this.disabled=true; this.form.submit();"><i
+                                        class="fa fa-trash" aria-hidden="true"></i>
+                                    Confirm Cancellation</i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% if listing['seller_status'] == 'completed' %}
+
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal"><i
+                    class="fa fa-trash" aria-hidden="true"></i> Remove from Selling History</button>
+
+            <!-- Modal -->
+            <div id="myModal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Remove from Selling History</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to remove this listing from your selling history? This action is
+                                permanent.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" data-dismiss="modal">Cancel</button>
+
+                            <form
+                                action="{{ url_for('remove_from_selling_history' ,listing_id = listing['listing_id']) }}"
+                                , method='post'>
+                                <button class="btn btn-danger" onclick="this.disabled=true; this.form.submit();"><i
+                                        class="fa fa-trash" aria-hidden="true"></i> Remove
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    <br>
+    <br>
+
+
+
+</div>
+<!-- <script type="text/javascript">
+    // Create an instance of the Stripe object with your publishable API key
+    var stripe = Stripe('pk_test_51If8q2KqACMNoj5OYvXNum7MPtprBnZgqbXzfFj3qNei5AmVjlBwCvViaKZMftytcPgZQnhGUx8hnXWTyX7NoVkP00DXqz7Thx');
+    var checkoutButton = document.getElementById('checkout-button');
+    var listing_id = document.getElementById('listing_id');
+    var price = document.getElementById('price');
+    var title = document.getElementById('title').value;
+    var image = document.getElementById('image').value;
+    listing_id = parseInt(listing_id.value);
+    price = parseFloat(price.value);
+    console.log(listing_id);
+    console.log(price);
+    console.log(title);
+    console.log(image);
+
+    checkoutButton.addEventListener('click', function () {
+        // Create a new Checkout Session using the server-side endpoint you
+        // created in step 3.
+        fetch('/create-checkout-session', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                listing_id: listing_id, // with the listing_id
+                price: price,
+                title: title,
+                image: image,
+            }),
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (session) {
+                return stripe.redirectToCheckout({ sessionId: session.id });
+            })
+            .then(function (result) {
+                // If `redirectToCheckout` fails due to a browser or network
+                // error, you should display the localized error message to your
+                // customer using `error.message`.
+                if (result.error) {
+                    alert(result.error.message);
+                }
+            })
+            .catch(function (error) {
+                console.error('Error:', error);
+            });
+    });
+
+</script> -->
+
+<div class="container first-div"></div>
+{% include 'footer.html' %}

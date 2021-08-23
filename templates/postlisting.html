@@ -1,0 +1,23 @@
+{% include 'header.html' %}
+<br>
+
+<div class="container first-div">
+
+    <h1 class="display-4 header">Add new listing</h1>
+    <p> Search for your book by ISBN!</p>
+
+    <form action="postlisting2" method="get">
+        <div class="form-group">
+            <label for="isbn-input"><strong>ISBN-13</strong></label>
+            <input type="text" class="form-control" id="isbn-input" name="isbn" placeholder="(e.g. 9780134076423)">
+            <small>Omit the dashes.</small>
+        </div>
+        <br>
+        <button type="submit" class="btn btn-primary" onclick="this.disabled=true; this.form.submit();">Submit</button>
+    </form>
+</div>
+
+
+<br>
+
+{% include 'footer.html' %}

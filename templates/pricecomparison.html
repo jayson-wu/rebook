@@ -1,0 +1,20 @@
+<div id="priceCompare" class="modal fade fullmode" role="dialog">
+    <div class="modal-dialog fullmode">
+
+        <!-- Modal content-->
+        <div class="modal-content fullmode">
+            <div class="modal-header">
+                <h4 class="modal-title">Price Comparison</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <small>Powered by <a href="https://www.directtextbook.com">Direct Textbook</a></small>
+                <br>
+                <iframe frameborder="0" style="position: absolute; width: 95%; height: 90%" src="https://www.directtextbook.com/search.php/isbn/{{book.getISBN()}}" title="directtextbook"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-dismiss="modal">Done</button>
+            </div>
+        </div>
+    </div>
+</div>

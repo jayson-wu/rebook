@@ -1,0 +1,132 @@
+{% include 'header.html' %}
+<br>
+
+<div class="container first-div">
+    <div id='alerts'>
+        {% include 'alerts.html' %}
+    </div>
+    
+
+    <h1 class="display-4 header">Welcome to your Buyer Bookbag.</h1>
+    <p>Here, you can find books you've added to your bookbag for future browsing, check the status of all the books
+        you've requested to purchase, or view your purchase history.</p>
+    <!-- <div class="container"> 
+        <button type="submit" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i> Post a Listing</button>
+    </div> -->
+
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+        <a href="#active" class="nav-link tab {%if page != 'pending' and page != 'completed'%} active {%endif%}" data-toggle="tab" id="active-tab"><i class="fa fa-book"
+                    aria-hidden="true"></i> In my Bookbag <span id="active-badge"><span class="badge badge-secondary">{{active|length}}</span></span></a>
+        </li>
+        <li class="nav-item">
+            <a href="#pending" class="nav-link tab {%if page == 'pending'%} active {%endif%}" data-toggle="tab" id="pending-tab"><i class="fa fa-spinner" aria-hidden="true"></i>
+                Pending Purchases <span id="pending-badge"><span class="badge badge-secondary">{{pending|length}}</span></span></a>
+        </li>
+        <li class="nav-item">
+            <a href="#completed" class="nav-link tab {%if page == 'completed'%} active {%endif%}" data-toggle="tab" id="completed-tab"><i class="fa fa-check-circle-o"
+                    aria-hidden="true"></i> Completed Purchases <span id="completed-badge"><span class="badge badge-secondary">{{completed|length}}</span></span></a>
+        </li>
+    </ul>
+
+    <div id="buyerbookbagtabs">
+        {% include 'buyerbookbagtabs.html' %}
+    </div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js">
+</script>
+
+<script>
+
+    'use strict';
+
+    function handleResponse(response) {
+        $('#active-badge').html($('#active-badge', response).html());
+        $('#pending-badge').html($('#pending-badge', response).html());
+        $('#completed-badge').html($('#completed-badge', response).html());
+        $('#buyerbookbagtabs').html($('#buyerbookbagtabs', response).html());
+        $('#alerts').html($('#alerts', response).html());
+    }
+
+    let request = null;
+
+    function getActiveResults() {
+        let url = '/buyerbookbagajax/active';
+        console.log(url);
+
+        if (request != null)
+            request.abort();
+
+        request = $.ajax(
+            {
+                type: 'POST',
+                url: url,
+                success: handleResponse
+            }
+        );
+    }
+
+    function getPendingResults() {
+        let url = '/buyerbookbagajax/pending';
+        console.log(url);
+
+        if (request != null)
+            request.abort();
+
+        request = $.ajax(
+            {
+                type: 'POST',
+                url: url,
+                success: handleResponse
+            }
+        );
+    }
+
+    function getCompletedResults() {
+        let url = '/buyerbookbagajax/completed';
+        console.log(url);
+
+        if (request != null)
+            request.abort();
+
+        request = $.ajax(
+            {
+                type: 'POST',
+                url: url,
+                success: handleResponse
+            }
+        );
+    }
+
+    function setup() {
+        $("#loading").hide();
+        $('#active-tab').on('click', getActiveResults);
+        $('#pending-tab').on('click', getPendingResults);
+        $('#completed-tab').on('click', getCompletedResults);
+    }
+
+    $('document').ready(setup);
+    $(document).on({
+        ajaxStart: function () {
+            $("#loading").show();
+            $("#active").addClass('hidden_text_field'); 
+            $("#pending").addClass('hidden_text_field'); 
+            $("#completed").addClass('hidden_text_field'); 
+        },
+        ajaxStop: function () {
+            $("#loading").hide();
+            $("#active").removeClass('hidden_text_field'); 
+            $("#pending").removeClass('hidden_text_field'); 
+            $("#completed").removeClass('hidden_text_field'); 
+            }    
+        });
+
+
+</script>
+
+    
+</div>
+
+<br>
+{% include 'footer.html' %}

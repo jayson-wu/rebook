@@ -1,0 +1,107 @@
+{% if delete_success: %}
+<div id='alert' class="alert alert-success alert-dismissible fade show" role="alert">
+    You have successfully deleted the listing.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<br>
+
+{% elif cancel_success: %}
+<div id='alert' class="alert alert-success alert-dismissible fade show" role="alert">
+    You have successfully cancelled the transaction.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<br>
+
+
+{% elif remove_success: %}
+<div id='alert' class="alert alert-success alert-dismissible fade show" role="alert">
+    You have successfully removed the listing from your selling history.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<br>
+
+{% elif confirm_success: %}
+<div id='alert' class="alert alert-success alert-dismissible fade show" role="alert">
+    You have successfully approved the transaction.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<br>
+
+{% elif post_success: %}
+<div id='alert' class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>Congratulations!</strong> You have successfully posted a new listing.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<br>
+
+{% elif update_success: %}
+<div id='alert' class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>Congratulations!</strong> You have successfully updated your listing.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<br>
+
+{% elif removebookbag_success: %}
+<div id='alert' class="alert alert-success alert-dismissible fade show" role="alert">
+    You have successfully removed the listing from your bookbag.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<br>
+
+{% elif cancelbookbag_success: %}
+<div id='alert' class="alert alert-success alert-dismissible fade show" role="alert">
+    You have successfully cancelled your transaction.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<br>
+
+{% elif removepurchase_success: %}
+<div id='alert' class="alert alert-success alert-dismissible fade show" role="alert">
+    You have successfully removed the listing from your purchase history.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<br>
+
+{% elif add_success: %}
+<div id='alert' class="alert alert-success alert-dismissible fade show" role="alert">
+    You have successfully added the listing to your bookbag.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<br>
+
+{% elif listingRemovedFromBookbag_success: %}
+<div id='alertRemoved' class="alert alert-danger alert-dismissible fade show" role="alert">
+    One or more of the listings in your bookbag is not available anymore. The following books were affected:
+    <ul>
+    {% for book in removed %}
+        <li>{{book}}</li>
+    {% endfor %}
+    </ul>
+    
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<br>
+
+{%endif%}

@@ -1,0 +1,26 @@
+{% if results|length == 0 %}
+<p>There are no results for your search. Make sure you've spelled everything correctly, or try different
+    keywords. </p>
+{% else %}
+{% for listing in results: %}
+
+<div class="col-lg-3 col-md-5 col-sm-12 item">
+    {% if listing['in_bookbag'] %}<i class="tooltip1 fa fa-bookmark fa-2x"
+        style="color:red; font-size: 20px !important"><span class='tooltiptext1'>Already in your
+            bookbag</span></i>{% endif %}
+    <br>
+    <a href="{{ url_for('show_listing' ,listing_id= listing['listing_id']) }}" class='tooltip1'>
+        <span class="tooltiptext1">{{listing['title']}} by {{listing['authors']}}
+        </span>
+
+        <h5 class='truncate'><strong>{{listing['title']}}</strong> by {{listing['authors']}}</h5>
+        ISBN: {{listing['isbn']}} </br>
+        Course: {{listing['coursenum']}}
+        <hr>
+        Price: ${{listing['price']}} <br>
+        Condition: {{listing['condition']}}<br>
+        Posted: {{listing['formatted_time']}}
+    </a>
+</div>
+{%endfor%}
+{% endif %}

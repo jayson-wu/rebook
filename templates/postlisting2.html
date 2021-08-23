@@ -1,0 +1,144 @@
+{% include 'header.html' %}
+
+<br>
+
+<div class="container first-div">
+    {% include 'alerts.html' %}
+    <h1 class="display-4 header">Add new listing</h1>
+    <p> Search for your book by ISBN!</p>
+
+    <form action="postlisting2" name="postlisting2" method="get">
+        <div class="form-group">
+            <label for="isbn-input"><strong>ISBN-13</strong></label>
+            <input type="text" class="form-control" id="isbn-input" name="isbn" value='{{isbn}}'
+                placeholder="(e.g. 9780134076423)">
+                <small>Omit the dashes.</small>
+
+        </div>
+        <small>(Not the book you want? Search again!)</small>
+        <br>
+        <br>
+        <button type="submit" class="btn btn-primary" onclick="this.disabled=true; this.form.submit();">Search</button>
+    </form>
+</div>
+
+<div class="container first-div">
+
+    {%if book is none%}
+    <p>That is not a valid ISBN. Make sure you've inputted the correct ISBN. </p>
+    {% else %}
+    <div class="row">
+        <div class="col-lg-6">
+            {% if book.getImage() != '' %}
+            <img id="listing-image" src={{book.getImage()}}>
+            {% else %}
+            <img id="listing-image" src='https://www.thermaxglobal.com/wp-content/uploads/2020/05/image-not-found.jpg'>
+            {% endif %}
+        </div>
+        <div class="col-lg-6">
+            <h4><strong>Title:</strong> {{book.getTitle()}}</h4>
+            {% if book.getSubtitle() != '' %}
+            <h6><strong>Subtitle:</strong> {{book.getSubtitle()}}</h6>
+            {% endif %}
+
+            <p><strong>Authors:</strong> {{book.getAuthorString()}}</p>
+            <p><strong>ISBN:</strong> {{book.getISBN()}}</p>
+
+            {% if book.getPublisher() != '' %}
+            <p><strong>Publisher:</strong> {{book.getPublisher()}}</p>
+            {% endif %}
+
+            {% if book.getPublishedDate() != '' %}
+            <p><strong>Published Date:</strong> {{book.getPublishedDate()}}</p>
+            {% endif %}
+
+            {% if book.getDescription() != '' %}
+            <p><strong>Description:</strong> {{book.getDescription()[:124]}}<span id="textMore"
+                    class='collapse'>{{book.getDescription()[124:]}}</span><br>
+                <button class="btn-link btn-anchor" id="seeMore" data-toggle="collapse" data-target="#textMore"
+                    aria-expanded="true">See More</button>
+            </p>
+            {% endif %}
+            <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#priceCompare">Check retail
+                price</button>
+
+            {% include 'pricecomparison.html' %}
+        </div>
+    </div>
+    <br>
+    <p>Please finish by entering the following information:</p>
+    <form id="newlisting" name="newlisting" action="post2" method="post" enctype="multipart/form-data">
+        <input type="hidden" id="isbn" name="isbn" value={{book.getISBN()}}>
+        <div class="form-group">
+            <label for="course-input"><strong>* Course</strong></label>
+            <input type="text" class="form-control" id="course-input" name="coursenum" placeholder="(e.g. COS126)">
+            <small class="form-text text-muted">Do not put spaces between the department code and the course
+                number. Please enter all of the cross-listings if you want your book to be more searchable. Ex: HIS207 / EAS207 / MED207</small>
+        </div>
+
+        <div class="form-group">
+            <label for="price-input"><strong>* Price</strong></label>
+            <input type="text" class="form-control" id="price-input" name="price" placeholder="(e.g. 20.99)">
+            <small class="form-text text-muted">Price should have 2 digits after decimal. Omit the dollar ($) sign.</small>
+        </div>
+
+        <label for="conditionRadios"><strong>* Condition</strong></label>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="conditionRadios" id="condition-new" value="New">
+            <label class="form-check-label" for="condition-new">
+                New
+            </label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="conditionRadios" id="condition-good" value="Good">
+            <label class="form-check-label" for="condition-good">
+                Good (Used but no damage or markings)
+            </label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="conditionRadios" id="condition-fair" value="Fair">
+            <label class="form-check-label" for="condition-fair">
+                Fair (Used with some wear and tear/markings)
+            </label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="conditionRadios" id="condition-poor" value="Poor">
+            <label class="form-check-label" for="condition-poor">
+                Poor (Lots of markings, damage, missing pages etc)
+            </label>
+        </div>
+        <br>
+
+        <div class="form-group">
+            <label for="additional-input"><strong>Additional Information</strong></label>
+            <textarea class="form-control" id="additional-input" name="info"
+                placeholder="Additional Information (optional)"></textarea>
+            <small class="form-text text-muted">Max Character Count: 500.</small>
+        </div>
+        <div class="form-group">
+            <label for="file"><strong>Images (max: 5)</strong></label>
+            <small class="form-text text-muted">Hold Cmd/Ctrl to select multiple images.</small>
+            <br>
+            <input type="file" id='file' name="file" accept="image/*" onchange='loadFile(event)' multiple>
+            <div id='filelist'></div>
+            <div id='imagelist'>
+                <img class='upload-thumbnail'>
+                <img class='upload-thumbnail'>
+                <img class='upload-thumbnail'>
+                <img class='upload-thumbnail'>
+                <img class='upload-thumbnail'>
+            </div>
+            <span id='clear' class='btn btn-danger hidden_text_field'>Clear all files</span>
+        </div>
+
+        <br>
+        <button type="submit" class="btn btn-primary" id="post-listing">Submit</button>
+    </form>
+    </br>
+    {% endif %}
+</div>
+<div class="container first-div"></div>
+{% include 'footer.html' %}

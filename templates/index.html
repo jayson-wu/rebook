@@ -1,0 +1,42 @@
+{% include 'header.html' %}
+
+
+
+<div class="jumbotron">
+    <img id='rebook' class='wow spinner' src='/static/rebook.png'>
+    <br>
+    <br>
+
+    <div class='slideDown'>
+        <h1 class="display-4 header">Reduce, Reuse, Rebook.</h1>
+        <p class="lead">Buy a book...</p>
+        <form action='{{url_for("search")}}' method="get">
+            <div class="form-group">
+                <input type="text" name="search" class="form-control" id="search"
+                    placeholder="Search books by title, isbn, author, course">
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="fa fa-search" aria-hidden="true"></i>
+                Search</button>
+        </form>
+
+        <hr class="my-4">
+        <p class="lead">Or</p>
+        <a href="{{ url_for('postListing')}}" class="btn btn-primary newlisting"><i class="fa fa-plus"
+                aria-hidden="true"></i> Post a Listing</a>
+
+    </div>
+</div>
+
+<script>
+
+    'use strict';
+
+    function setup() {
+        $('#search').focus();
+    }
+
+    $('document').ready(setup);
+
+</script>
+
+{% include 'footer.html' %}

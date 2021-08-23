@@ -1,0 +1,140 @@
+{% include 'header.html' %}
+<br>
+
+<div class="container first-div">
+
+    <h1 class="display-4 header">Edit listing</h1>
+    <br>
+    <small>Posted: {{listing['formatted_time']}}</small>
+    {%if listing is none%}
+    <p>This is not a current listing. Please refresh the page. </p>
+    {% else %}
+    <div class="row">
+        <div class="col-lg-6">
+            {% if book.getImage() != '' %}
+            <img id="listing-image" src={{book.getImage()}}>
+            {% else %}
+            <img id="listing-image" src='https://www.thermaxglobal.com/wp-content/uploads/2020/05/image-not-found.jpg'>
+            {% endif %}
+        </div>
+        <div class="col-lg-6">
+            <h4>Title: {{book.getTitle()}}</h4>
+            {% if book.getSubtitle() != '' %}
+            <h6>Subtitle: {{book.getSubtitle()}}</h6>
+            {% endif %}
+            <br>
+
+            <p><strong>Authors:</strong> {{book.getAuthorString()}}</p>
+            <p><strong>ISBN:</strong> {{book.getISBN()}}</p>
+
+            {% if book.getPublisher() != '' %}
+            <p><strong>Publisher:</strong> {{book.getPublisher()}}</p>
+            {% endif %}
+
+            {% if book.getPublishedDate() != '' %}
+            <p><strong>Published Date:</strong> {{book.getPublishedDate()}}</p>
+            {% endif %}
+
+            {% if book.getDescription() != '' %}
+            <p><strong>Description:</strong> {{book.getDescription()[:124]}}<span id="textMore" class='collapse'>{{book.getDescription()[124:]}}</span><br>
+                <button class="btn-link btn-anchor" id="seeMore" data-toggle="collapse" data-target="#textMore" aria-expanded="true">See More</button></p>
+            {% endif %}
+            <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#priceCompare">Check retail
+                price</button>
+
+            {% include 'pricecomparison.html' %}
+            
+        </div>
+    </div>
+    <br>
+    <p>Please enter the new information:</p>
+    <form id="editlisting" name="editlisting" action="{{ url_for('update_listing', listing_id=listing['listing_id']) }}"
+        method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="course-input"><strong>* Course</strong></label>
+            <input type="text" class="form-control" id="course-input" name="coursenum" value="{{ listing['coursenum'] }}">
+            <small class="form-text text-muted">Do not put spaces between the department code and the course
+                number.</small>
+        </div>
+
+        <div class="form-group">
+            <label for="price-input"><strong>* Price</strong></label>
+            <input type="text" class="form-control" id="price-input" name="price" value="{{ listing['price'] }}">
+            <small class="form-text text-muted">Price should have 2 digits after decimal. Omit the dollar ($) sign.</small>
+        </div>
+
+        <label for="conditionRadios"><strong>* Condition</strong></label>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="conditionRadios" id="condition-new" value="New" {% if
+                listing["condition"]=="New" %} checked {%endif%}>
+            <label class="form-check-label" for="condition-new">
+                New
+            </label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="conditionRadios" id="condition-good" value="Good" {% if
+                listing["condition"]=="Good" %} checked {%endif%}>
+            <label class="form-check-label" for="condition-good">
+                Good (Used but no damage or markings)
+            </label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="conditionRadios" id="condition-fair" value="Fair" {% if
+                listing["condition"]=="Fair" %} checked {%endif%}>
+            <label class="form-check-label" for="condition-fair">
+                Fair (Used with some wear and tear/markings)
+            </label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="conditionRadios" id="condition-poor" value="Poor" {% if
+                listing["condition"]=="Poor" %} checked {%endif%}>
+            <label class="form-check-label" for="condition-poor">
+                Poor (Lots of markings, damage, missing pages etc)
+            </label>
+        </div>
+        <br>
+
+        <div class="form-group">
+            <label for="additional-input"><strong>Additional Information</strong></label>
+            <textarea class="form-control" id="additional-input" name="info">{{listing['description']}}</textarea>
+            <small class="form-text text-muted">Max Character Count: 500.</small>
+        </div>
+
+        <div class="form-group">
+            <label for="file"><strong>Images (max: 5)</strong></label>
+            <small class="form-text text-muted">Hold Cmd/Ctrl to select multiple images.</small>
+            <br>
+            <input type="file" name="file" id='file' accept="image/*" onchange = 'loadFile(event)' multiple>
+            <br>
+            <div id='filelist'></div>
+            {% set count = 5 %}
+            <div id='imagelist'>
+                {%for photo in listing['photos']%}
+                {% set count = count - 1 %}
+                <img class='upload-thumbnail' src='{{photo[1]}}'>
+                {%endfor%}
+                {% for i in range(count)%}
+                <img class='upload-thumbnail'>
+                {%endfor%}
+            </div>
+            {% if listing['photos']|length != 0 %}
+            <span id='clear' class='btn btn-danger'>Clear all files</span>
+            {% else %}
+            <br>
+            <span id='clear' class='btn btn-danger hidden_text_field'>Clear all files</span>
+            {% endif %}
+
+            <input id='clearimages' class="hidden_text_field" name='clearimages' type=text>
+
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="update-listing">Update</button>
+    </form>
+    </br>
+    {% endif %}
+</div>
+<div class="container first-div"></div>
+{% include 'footer.html' %}
